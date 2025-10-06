@@ -24,7 +24,7 @@ h1 {
 
 .nav-links {
   width: 100%;
-  display: none;
+  display: none /*!important*/; 
   margin: 0;
 }
 
@@ -47,7 +47,7 @@ h1 {
 @media screen and (min-width: 636px) {
   .nav-links {
     margin-left: 5em;
-    display: block;
+    display: block /*!important*/;
     position: static;
     width: auto;
     background: none;
@@ -58,3 +58,10 @@ h1 {
     padding: 15px 20px;
   }
 }
+
+/* TEMP TEST */
+/* body { background: #ffd5d5; }  */             /* default (mobile) */
+/* @media (min-width: 636px) { */
+/*  body { background: #d6ffd6; }  */          /* desktop */
+/*  .nav-links { outline: 6px solid magenta; } */
+/* } */
