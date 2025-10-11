@@ -12,14 +12,46 @@
     border: 0;
     background: none;
   }
+  /*
+    Initial state: light theme (default)
+   */
   .sun { fill: black; }
   .moon { fill: transparent; }
 
+  /*
+  Use :global(.dark) (or is:global) when you need to match a global ancestor 
+  like <html class="dark">.
+  */
   :global(.dark) .sun { fill: transparent; }
   :global(.dark) .moon { fill: white; }
 </style>
 
+<!--
+Why client:load is not needed with ThemeIcon?
+client:* directives (like client:load, client:idle, etc.) are only for 
+framework components (React/Preact/Vue/Svelte) that need to run on the 
+client. They tell Astro to ship the framework runtime and hydrate that 
+island so its JSX handlers, hooks, state, etc., work in the browser.
+A .astro component without a framework is just HTML + (optional) plain JS. If 
+you include a normal <script> (e.g., your <script is:inline>…</script> that 
+toggles the .dark class and binds a click handler), that script is emitted in 
+the page and runs in the browser without any client:* directive. It’s not a 
+framework island; it’s just regular DOM code.
+Your ThemeIcon’s show/hide behavior is controlled by CSS reacting to the global
+ .dark class. The interactivity (toggling the class, saving to localStorage) is
+  handled by a plain script that attaches a listener to #themeToggle. None of 
+  that requires React/Preact hydration.
+-->
+
 <script is:inline>
+  /*
+    IIFE = Immediately Invoked Function Expression.
+    It’s a function you define and run immediately.
+
+    const theme = (function () {
+        return 'dark';
+    }());
+  */
   const theme = (() => {
     const localStorageTheme = localStorage?.getItem("theme") ?? '';
     if (['dark', 'light'].includes(localStorageTheme)) {
