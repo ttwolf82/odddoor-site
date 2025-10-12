@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import MarkdownPostLayout from '../../layouts/MarkdownPostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id }, props: { post },
+  }));
+}
+
+/*
+    post comes from whatever passed it in as a prop. In that tutorial, it’s set
+     in getStaticPaths() for the dynamic route and then exposed on Astro.props 
+     inside the page.
+ */
+const { post } = Astro.props;
+/*
+    Object destructuring syntax.
+    await render(post) returns an object, e.g. { Content, headings }.
+    const { Content } = await render(post); means:
+    call render(post),
+    take its .Content property,
+    create a new constant variable named Content bound to that property.
+    Equivalent, written in two lines:
+    const result = await render(post);
+    const Content = result.Content;
+    You can also alias it:
+    const { Content: PostBody, headings: toc } = await render(post);
+    // variables are named PostBody and toc
+    Notes:
+    This is standard JS destructuring, not JSX or special Astro syntax.
+    You can use let instead of const if you plan to reassign (rare here).
+    If the property doesn’t exist, the variable will be undefined.
+ */
+
+const { Content } = await render(post);
+---
+<MarkdownPostLayout frontmatter={post.data}>
+  <Content />
+</MarkdownPostLayout>
